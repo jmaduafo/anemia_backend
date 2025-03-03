@@ -73,7 +73,10 @@ class AnemiaInput(BaseModel):
     # String
     Gender:  int
     Hemoglobin: float
-
+    
+@app.get("/")
+def home():
+    return {"message": "Anemia Prediction API is running!"}
 
 # Prediction endpoint
 @app.post("/predict")

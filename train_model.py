@@ -14,38 +14,63 @@ def train_and_save_model():
     categorical_columns = df.select_dtypes(include=['object']).columns
     print("Categorical Columns:", categorical_columns)
 
-    # Apply Label Encoding (convert text to numbers)
+    # Apply Label Encoding and save encoders
     label_encoders = {}
     for col in categorical_columns:
         le = LabelEncoder()
         df[col] = le.fit_transform(df[col].astype(str))  # Convert to string before encoding
         label_encoders[col] = le
 
+    # Save the label encoders
+    with open("encoder.pkl", "wb") as f:
+        pickle.dump(label_encoders, f)
+    print("Encoders saved as encoder.pkl")
+
     # Define features (X) and target variable (y)
-    X = df[["Age of Child (months)", 
-            "Gender", "Parent/Guardian's Education Level", "Parent/Guardian's Occupation", "Approximate Combined Monthly Family Income (Naira)", "Parent/Guardian's Religion", "Parent/Guardian's Tribe", "Marital Status of Informant","Malaria", "Respiratory infection", "Diarrhea", "How often does the child eat food rich in Protein (e.g meat, eggs, beans)", "How often does the child eat food that contains Green leaf vegetables?", "How often does the child eat fruits",
-            "How often does the child eat Iron-fortified foods?",
-            "Does your child take Vitamin Supplements?",
-            "Was the child exclusively breastfed?",
-            "Has the child been dewormed before?",
-            "Family Dwelling",
-            "Number of People in the Household:",
-            "Sanitation Facilities in Household",
-            "Number of Toilets",
-            "Water Source for Household",
-            "Does the child regularly sleep under an insecticide-treated mosquito net?",
-            "Refuse Disposal Frequency",
-            "Weight of Child (in kg)", 
-            "Height of Child (in cm)",
-            "Body Mass Index (BMI) (calculated)",
-            "Hemoglobin Level (Hb) (g/dL) by Non-Invasive Device",
-        ]]  # Keep this column!
-   
-   # Initialize LabelEncoder
-    label_encoder = LabelEncoder()
+    X = df[[
+        "Age of Child (months)", 
+        "Gender", 
+        "Parent/Guardian's Education Level", 
+        "Parent/Guardian's Occupation", 
+        "Approximate Combined Monthly Family Income (Naira)", 
+        "Parent/Guardian's Religion", 
+        "Parent/Guardian's Tribe", 
+        "Marital Status of Informant", 
+        "Malaria", 
+        "Respiratory infection", 
+        "Diarrhea", 
+        "How often does the child eat food rich in Protein (e.g meat, eggs, beans)", 
+        "How often does the child eat food that contains Green leaf vegetables?", 
+        "How often does the child eat fruits",
+        "How often does the child eat Iron-fortified foods?",
+        "Does your child take Vitamin Supplements?",
+        "Was the child exclusively breastfed?",
+        "Has the child been dewormed before?",
+        "Family Dwelling",
+        "Number of People in the Household:",
+        "Sanitation Facilities in Household",
+        "Number of Toilets",
+        "Water Source for Household",
+        "Does the child regularly sleep under an insecticide-treated mosquito net?",
+        "Refuse Disposal Frequency",
+        "Weight of Child (in kg)", 
+        "Height of Child (in cm)",
+        "Body Mass Index (BMI) (calculated)",
+        "Hemoglobin Level (Hb) (g/dL) by Non-Invasive Device"
+    ]]  
+
+    # Ensure no missing values
+    X.fillna(0, inplace=True)  # Replace missing values with 0 (or use other strategies)
 
     # Encode the target variable
+    label_encoder = LabelEncoder()
     y = label_encoder.fit_transform(df["Classification of Anemia Status with Non-Invasive Device"])
+
+    # Save the label encoder for target variable
+    with open("target_encoder.pkl", "wb") as f:
+        pickle.dump(label_encoder, f)
+    
+    print("Target encoder saved as target_encoder.pkl")
 
     # Split data (80% train, 20% test)
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
@@ -62,7 +87,14 @@ def train_and_save_model():
     # Save trained model
     with open("anemia_model.pkl", "wb") as f:
         pickle.dump(model, f)
+        
     print("Model saved as anemia_model.pkl")
+
+    # Save feature names for consistency
+    with open("trained_columns.pkl", "wb") as f:
+        pickle.dump(X.columns.tolist(), f)
+        
+    print("Trained feature columns saved as trained_columns.pkl")
 
 # Train and save model
 if __name__ == "__main__":

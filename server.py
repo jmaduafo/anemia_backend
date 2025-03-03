@@ -128,32 +128,6 @@ def predict_anemia(data: AnemiaInput):
         "Hemoglobin": "Hemoglobin Level (Hb) (g/dL) by Non-Invasive Device",    
     })
     
-    # "Classification of Anemia Status with Non-Invasive Device",
-    # "Anemia Status with Non-Invasive Device",
-    
-    # Apply encoding
-    # input_data["Parent/Guardian's Education Level"] = input_data["Parent/Guardian's Education Level"].map(education_mapping)
-    # input_data["Parent/Guardian's Occupation"] = input_data["Parent/Guardian's Occupation"].map(occupation_mapping)
-    # input_data["Approximate Combined Monthly Family Income (Naira)"] = input_data["Approximate Combined Monthly Family Income (Naira)"].map(income_mapping)
-    # input_data["Parent/Guardian's Religion"] = input_data["Parent/Guardian's Religion"].map(religion_mapping)
-    # input_data["Parent/Guardian's Tribe"] = input_data["Parent/Guardian's Tribe"].map(tribe_mapping)
-    # input_data["Marital Status of Informant"] = input_data["Marital Status of Informant"].map(marital_mapping)
-    # input_data["Malaria"] = input_data["Malaria"].map(option_mapping)
-    # input_data["Respiratory infection"] = input_data["Respiratory infection"].map(option_mapping)
-    # input_data["Diarrhea"] = input_data["Diarrhea"].map(option_mapping)
-    # input_data["How often does the child eat food rich in Protein (e.g meat, eggs, beans)"] = input_data["How often does the child eat food rich in Protein (e.g meat, eggs, beans)"].map(howOften_mapping)
-    # input_data["How often does the child eat food that contains Green leaf vegetables?"] = input_data["How often does the child eat food that contains Green leaf vegetables?"].map(howOften_mapping)
-    # input_data["How often does the child eat fruits"] = input_data["How often does the child eat fruits"].map(howOften_mapping)
-    # input_data["How often does the child eat Iron-fortified foods?"] = input_data["How often does the child eat Iron-fortified foods?"].map(howOften_mapping)
-    # input_data["Does your child take Vitamin Supplements?"] = input_data["Does your child take Vitamin Supplements?"].map(option_mapping)
-    # input_data["Was the child exclusively breastfed?"] = input_data["Was the child exclusively breastfed?"].map(option_mapping)
-    # input_data["Has the child been dewormed before?"] = input_data["Has the child been dewormed before?"].map(option_mapping)
-    # input_data["Family Dwelling"] = input_data["Family Dwelling"].map(dwelling_mapping)
-    # input_data["Sanitation Facilities in Household"] = input_data["Sanitation Facilities in Household"].map(sanitation_mapping)
-    # input_data["Water Source for Household"] = input_data["Water Source for Household"].map(source_mapping)
-    # input_data["Does the child regularly sleep under an insecticide-treated mosquito net?"] = input_data["Does the child regularly sleep under an insecticide-treated mosquito net?"].map(option_mapping)
-    # input_data["Refuse Disposal Frequency"] = input_data["Refuse Disposal Frequency"].map(refuse_mapping)
-    
      # Check for missing values after encoding
     if input_data.isnull().values.any():
         return {"error": "Some input values could not be mapped. Please check your input."}
@@ -195,6 +169,8 @@ def predict_anemia(data: AnemiaInput):
 
     # Make prediction
     prediction = model.predict(input_data)[0]
-    return {"anemia": bool(prediction)}
 
-# Run with: python -m uvicorn server:app --reload
+    # Return the numerical prediction
+    return {"anemia": int(prediction)}
+
+    # Run with: python -m uvicorn server:app --reload
